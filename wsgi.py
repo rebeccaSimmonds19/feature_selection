@@ -12,6 +12,9 @@ from flask import Flask, render_template
 import json
 
 application = Flask(__name__)
+
+categorical_features_indices =[0,1,2,3,4,5,6,7,8,9]
+
 @application.route('/')
 def index():
 
@@ -19,9 +22,7 @@ def index():
     X = data.drop(columns=['points'])
     X=X.fillna(-1)
 
-    categorical_features_indices =[0,1,2,3,4,5,6,7,8,9]
     y=data['points']
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.2, random_state=52)
     model=perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test)
@@ -31,12 +32,11 @@ def index():
     feature_score = feature_score.sort_values(by='Score', ascending=False, inplace=False, kind='quicksort', na_position='last')
 
     data = [go.Bar(
-            x=temp.index,
-            y=temp.values,
+            x=feature_score.Feature,
+            y=feature_score.Score,
             marker=dict(
             color='purple'
-            )
-    )]
+    ) )]
     layout = go.Layout(
         autosize=True,
         title="feature selection"
@@ -73,3 +73,6 @@ def make_template():
         # move the file to the templates dir
         shutil.move('/opt/app-root/src/temp-plot.html', new_path)
     return render_template("temp-plot.html", title='Catboost Feature Importance Ranking')
+
+if __name__ == '__main__':
+    application.run()
