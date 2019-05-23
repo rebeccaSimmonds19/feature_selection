@@ -1,0 +1,7 @@
+plotly
+sklearn
+catboost
+pandas
+seaborn
+gunicorn
+Flask
