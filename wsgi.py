@@ -13,19 +13,17 @@ import json
 
 application = Flask(__name__)
 
-categorical_features_indices =[0,1,2,3,4,5,6,7,8,9]
-
 @application.route('/')
 def index():
 
     data = pd.read_csv("wine-reviews/winemag-data_first150k.csv")
     X = data.drop(columns=['points'])
     X=X.fillna(-1)
-
+    categorical_features_indices =[0,1,2,3,4,5,6,7,8,9]
     y=data['points']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.2, random_state=52)
-    model=perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test)
+    model=perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test, categorical_features_indices =[0,1,2,3,4,5,6,7,8,9])
     feature_score = pd.DataFrame(list(zip(X.dtypes.index, model.get_feature_importance(Pool(X, label=y, cat_features=categorical_features_indices)))),
                     columns=['Feature','Score'])
 
@@ -47,7 +45,7 @@ def index():
     print(template)
     return make_template()
 
-def perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test):
+def perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test, categorical_features_indices):
     model = CatBoostRegressor(
         random_seed = 400,
         loss_function = 'RMSE',
