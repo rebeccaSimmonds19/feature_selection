@@ -23,7 +23,7 @@ def index():
     y=data['points']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.2, random_state=52)
-    model=perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test, categorical_features_indices =[0,1,2,3,4,5,6,7,8,9])
+    model=perform_model(X_train, y_train,X_valid, y_valid,X_test, y_test, categorical_features_indices)
     feature_score = pd.DataFrame(list(zip(X.dtypes.index, model.get_feature_importance(Pool(X, label=y, cat_features=categorical_features_indices)))),
                     columns=['Feature','Score'])
 
